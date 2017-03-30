@@ -2,8 +2,8 @@
 //  CanlendarCollectionViewCell.swift
 //  Calendar
 //
-//  Created by qmc on 16/11/1.
-//  Copyright © 2016年 刘俊杰. All rights reserved.
+//  Created by hzf on 16/11/1.
+//  Copyright © 2016年 hzf. All rights reserved.
 //
 
 import UIKit
@@ -12,16 +12,20 @@ class CanlendarCollectionViewCell: UICollectionViewCell {
     
     var dateLabel: UILabel!
     var monthModel: MonthModel? {
-        didSet {
-            if monthModel != nil {
-                let v = monthModel!.dayValue
-                dateLabel.text = String(v)
-                if (monthModel!.isSelectedDay) {
-                    self.dateLabel.backgroundColor = UIColor.redColor()
-                    self.dateLabel.textColor = UIColor.whiteColor()
-                }
+        
+        willSet{
+            guard let v = newValue else {
+                return
             }
+            dateLabel.text = String(v.dayValue)
+            if (v.isSelectedDay) {
+                self.dateLabel.backgroundColor = UIColor.red
+                self.dateLabel.textColor = UIColor.white
+            }
+            
         }
+        
+        
     }
 
     override init(frame: CGRect) {
@@ -35,14 +39,14 @@ class CanlendarCollectionViewCell: UICollectionViewCell {
     
     func setupSubviews() {
         dateLabel = UILabel()
-        dateLabel.textAlignment = .Center
+        dateLabel.textAlignment = .center
 //        dateLabel.layer.borderColor = UIColor.redColor().CGColor
 //        dateLabel.layer.borderWidth = 1
-        dateLabel.font = UIFont.systemFontOfSize(17)
+        dateLabel.font = UIFont.systemFont(ofSize: 17)
         self.contentView.addSubview(dateLabel)
         
         weak var weakself = self
-        dateLabel.snp_makeConstraints { (make) in
+        dateLabel.snp.makeConstraints { (make) in
             make.edges.equalTo(weakself!.contentView)
         }
         

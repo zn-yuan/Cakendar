@@ -2,8 +2,8 @@
 //  CalendarView.swift
 //  Calendar
 //
-//  Created by qmc on 16/11/1.
-//  Copyright © 2016年 刘俊杰. All rights reserved.
+//  Created by hzf on 16/11/1.
+//  Copyright © 2016年 hzf. All rights reserved.
 //
 
 import UIKit
@@ -11,14 +11,14 @@ import UIKit
 let calendarCellIdentifier = "calendarCellIdentifier"
 class CalendarView: UIView, UICollectionViewDelegate, UICollectionViewDataSource {
     
-    var date: NSDate! {
+    var date: Date! {
         didSet{
             monthLabel.text = "\(date.month())-\(date.year())"
             getDateModel(date)
             collectionView.reloadData()
         }
     }
-    var today: NSDate!
+    var today: Date!
     
     var collectionView: UICollectionView!
     
@@ -29,9 +29,9 @@ class CalendarView: UIView, UICollectionViewDelegate, UICollectionViewDataSource
     var nextBtn: UIButton!
     
     var weekDayArray: [String]!
-    var dayModelArray: [AnyObject]!
+    var dayModelArray: [Any]!
     
-    var mask: UIView!
+//    var mask: UIView!
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -43,7 +43,7 @@ class CalendarView: UIView, UICollectionViewDelegate, UICollectionViewDataSource
         fatalError("init(coder:) has not been implemented")
     }
     
-    func getDateModel(date: NSDate)  {
+    func getDateModel(_ date: Date)  {
         let days = date.numberOfDaysInCurrentMonth()
         //1.Sun. 2.Mon. 3.Thes. 4.Wed. 5.Thur. 6.Fri. 7.Sat.
         let week = date.firstWeekdayInCurrentMonth()
@@ -80,22 +80,22 @@ class CalendarView: UIView, UICollectionViewDelegate, UICollectionViewDataSource
         
         let layout = UICollectionViewFlowLayout()
         layout.sectionInset = UIEdgeInsetsMake(0, 0, 0, 0)
-        layout.itemSize = CGSizeMake(itemWidth, itemHeight)
+        layout.itemSize = CGSize(width: itemWidth, height: itemHeight)
         layout.minimumLineSpacing = 0
         layout.minimumInteritemSpacing = 0
         collectionView.setCollectionViewLayout(layout, animated: true)
     }
     
-    @objc func previouseAction(sender: UIButton) {
-        UIView.transitionWithView(self, duration: 0.5, options: .TransitionCurlDown, animations: { 
+    @objc func previouseAction(_ sender: UIButton) {
+        UIView.transition(with: self, duration: 0.5, options: .transitionCurlDown, animations: { 
             self.date = self.date.dayInThePreviousMonth()
         }) { (flag) in
             
         }
     }
     
-    @objc func nextAction(sender: UIButton) {
-        UIView.transitionWithView(self, duration: 0.5, options: .TransitionCurlUp, animations: { 
+    @objc func nextAction(_ sender: UIButton) {
+        UIView.transition(with: self, duration: 0.5, options: .transitionCurlUp, animations: { 
             self.date = self.date.dayInTheFollowingMonth()
         }) { (flag) in
             
@@ -107,7 +107,7 @@ class CalendarView: UIView, UICollectionViewDelegate, UICollectionViewDataSource
      // An empty implementation adversely affects performance during animation.
      
      */
-    override func drawRect(rect: CGRect) {
+    override func draw(_ rect: CGRect) {
         // Drawing code
         customInterface()
     }
@@ -116,11 +116,11 @@ class CalendarView: UIView, UICollectionViewDelegate, UICollectionViewDataSource
 typealias delegateExtension = CalendarView
 extension delegateExtension{
     
-    func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 2
     }
     
-    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
         if section == 0 {
             return weekDayArray.count
@@ -129,10 +129,10 @@ extension delegateExtension{
         return self.dayModelArray.count
     }
     
-    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(calendarCellIdentifier, forIndexPath: indexPath) as! CanlendarCollectionViewCell
-        cell.dateLabel.backgroundColor = UIColor.whiteColor()
-        cell.dateLabel.textColor = UIColor.blackColor()
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: calendarCellIdentifier, for: indexPath) as! CanlendarCollectionViewCell
+        cell.dateLabel.backgroundColor = UIColor.white
+        cell.dateLabel.textColor = UIColor.black
         if indexPath.section == 0 {
             cell.monthModel = nil
             cell.dateLabel.text = weekDayArray[indexPath.row]
@@ -149,7 +149,7 @@ extension delegateExtension{
         return cell
     }
     
-    func collectionView(collectionView: UICollectionView, shouldSelectItemAtIndexPath indexPath: NSIndexPath) -> Bool {
+    func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
         if indexPath.section == 1 {
             let mon = self.dayModelArray[indexPath.row]
             if let _ = mon as? MonthModel {
@@ -161,7 +161,7 @@ extension delegateExtension{
         return false
     }
     
-    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let mon = self.dayModelArray[indexPath.row] as! MonthModel
         print("date:---\(mon.dateValue)")
     }
@@ -176,27 +176,27 @@ extension setupSubviewExtension {
         monthLabel = UILabel()
         monthLabel.backgroundColor = UIColor(rgb: 0x20C48A)
         monthLabel.text = "20000"
-        monthLabel.textColor = UIColor.whiteColor()
-        monthLabel.textAlignment = .Center
-        previouBtn = UIButton(type: .Custom)
-        previouBtn.setTitle("<", forState: .Normal)
-        previouBtn.addTarget(self, action: #selector(previouseAction(_:)), forControlEvents: .TouchUpInside)
+        monthLabel.textColor = UIColor.white
+        monthLabel.textAlignment = .center
+        previouBtn = UIButton(type: .custom)
+        previouBtn.setTitle("<", for: UIControlState())
+        previouBtn.addTarget(self, action: #selector(previouseAction(_:)), for: .touchUpInside)
         
-        nextBtn = UIButton(type: .Custom)
-        nextBtn.setTitle(">", forState: .Normal)
-        nextBtn.addTarget(self, action: #selector(nextAction(_:)), forControlEvents: .TouchUpInside)
+        nextBtn = UIButton(type: .custom)
+        nextBtn.setTitle(">", for: UIControlState())
+        nextBtn.addTarget(self, action: #selector(nextAction(_:)), for: .touchUpInside)
         
         let layout = UICollectionViewFlowLayout()
         layout.sectionInset = UIEdgeInsetsMake(0, 0, 0, 0)
-        layout.itemSize = CGSizeMake(50, 50)
+        layout.itemSize = CGSize(width: 50, height: 50)
         layout.minimumLineSpacing = 10
         layout.minimumInteritemSpacing = 10
         
-        collectionView = UICollectionView(frame: CGRectZero, collectionViewLayout: layout)
+        collectionView = UICollectionView(frame: CGRect.zero, collectionViewLayout: layout)
         collectionView.delegate = self
         collectionView.dataSource = self
-        collectionView.registerClass(CanlendarCollectionViewCell.self, forCellWithReuseIdentifier: calendarCellIdentifier)
-        collectionView.backgroundColor = UIColor.whiteColor()
+        collectionView.register(CanlendarCollectionViewCell.self, forCellWithReuseIdentifier: calendarCellIdentifier)
+        collectionView.backgroundColor = UIColor.white
         self.addSubview(monthLabel)
         self.addSubview(previouBtn)
         self.addSubview(nextBtn)
@@ -204,25 +204,25 @@ extension setupSubviewExtension {
         
         weak var weakself = self
         
-        monthLabel.snp_makeConstraints { (make) in
+        monthLabel.snp.makeConstraints { (make) in
             make.left.right.top.equalTo(weakself!)
             make.height.equalTo(40)
         }
         
-        previouBtn.snp_makeConstraints { (make) in
+        previouBtn.snp.makeConstraints { (make) in
             make.height.top.equalTo((weakself?.monthLabel)!)
             make.left.equalTo((weakself?.monthLabel)!).offset(0)
             make.width.equalTo(60)
         }
         
-        nextBtn.snp_makeConstraints { (make) in
+        nextBtn.snp.makeConstraints { (make) in
             make.height.top.equalTo((weakself?.monthLabel)!)
             make.right.equalTo((weakself?.monthLabel)!).offset(0)
             make.width.equalTo(60)
         }
         
-        collectionView.snp_makeConstraints { (make) in
-            make.top.equalTo((weakself?.monthLabel.snp_bottom)!)
+        collectionView.snp.makeConstraints { (make) in
+            make.top.equalTo((weakself?.monthLabel.snp.bottom)!)
             make.left.right.bottom.equalTo((weakself)!)
         }
     }

@@ -2,8 +2,8 @@
 //  ViewController.swift
 //  Calendar
 //
-//  Created by qmc on 16/10/31.
-//  Copyright © 2016年 刘俊杰. All rights reserved.
+//  Created by hzf on 16/10/31.
+//  Copyright © 2016年 hzf. All rights reserved.
 //
 
 
@@ -34,9 +34,9 @@ class ViewController: UIViewController {
 //        calendarInfo()
 //        calendarInfo()
 //        rangeOfUnit()
-        self.view.backgroundColor = UIColor.grayColor()
-        let calendarView = CalendarView(frame: CGRectMake(0, 64, self.view.frame.width / 2, 200))
-        calendarView.today = NSDate()
+        self.view.backgroundColor = UIColor.gray
+        let calendarView = CalendarView(frame: CGRect(x: 0, y: 64, width: self.view.frame.width / 2, height: 200))
+        calendarView.today = Date()
         calendarView.date = calendarView.today
         self.view.addSubview(calendarView)
     }
@@ -44,35 +44,35 @@ class ViewController: UIViewController {
     //MARK:---日历的创建
     func calendarCreate() {
         // 根据提供的日历标示符初始化。
-        let calendar = NSCalendar(calendarIdentifier: NSCalendarIdentifierGregorian)
+        let calendar = Foundation.Calendar(identifier: Calendar.Identifier.gregorian)
         // 返回当前客户端的逻辑日历
         /*
          取得的值会一直保持在 cache 中，第一次用此方法实例化对象后，即使修改了系统日历设定，这个对象也不会改变
          */
         
-        let cal2: NSCalendar = NSCalendar.currentCalendar()
+        let cal2: Foundation.Calendar = Foundation.Calendar.current
         
         // 返回当前客户端的逻辑日历
         /*
          当每次修改系统日历设定，其实例化的对象也会随之改变。
          */
         
-        let cal3: NSCalendar = NSCalendar.autoupdatingCurrentCalendar()
+        let cal3: Foundation.Calendar = Foundation.Calendar.autoupdatingCurrent
         
     }
     
     
     // MARK: ------日历的设置
     func calendarSet(){
-        let calendar: NSCalendar = NSCalendar.currentCalendar()
+        var calendar: Foundation.Calendar = Foundation.Calendar.current
         // 设置区域
-        calendar.locale = NSLocale(localeIdentifier: "zh_CN")
+        calendar.locale = Locale(identifier: "zh_CN")
         // 设置时区
         /*
          设置时区，设置为 GMT+8，即北京时间(+8)
          */
-        calendar.timeZone = NSTimeZone(abbreviation: "EST")!
-        calendar.timeZone = NSTimeZone(forSecondsFromGMT: 28800)
+        calendar.timeZone = TimeZone(abbreviation: "EST")!
+        calendar.timeZone = TimeZone(secondsFromGMT: 28800)!
         
         // 设定每周的第一天从星期几开始
         /*
@@ -88,7 +88,7 @@ class ViewController: UIViewController {
  
     //MARK: ---日历设置信息的获取
     func getCaledarSettingInfo() {
-        let calendar: NSCalendar = NSCalendar.currentCalendar()
+        let calendar: Foundation.Calendar = Foundation.Calendar.current
         
         // 获取日历标示符
         /*
@@ -107,11 +107,11 @@ class ViewController: UIViewController {
                  iso8601
          */
         
-        let calendarIndentifier = calendar.calendarIdentifier
+        let calendarIndentifier = calendar.identifier
         print("calendarIndentifier:----\(calendarIndentifier)")
         // 获取地区信息
-        let localeIdentifier = calendar.locale?.localeIdentifier
-        let localeIdentifier2 = calendar.locale?.objectForKey("calendarIdentifier")
+        let localeIdentifier = calendar.locale?.identifier
+        let localeIdentifier2 = (calendar.locale as NSLocale?)?.object(forKey: NSLocale.Key(rawValue: "calendarIdentifier"))
         print("localeIdentifier:---\(localeIdentifier) ---or---\(localeIdentifier2)")
         
         // 获取时区信息
@@ -237,11 +237,11 @@ class ViewController: UIViewController {
     
     func calendarInfo(){
         
-        let calendar: NSCalendar = NSCalendar.currentCalendar()
+        let calendar: Foundation.Calendar = Foundation.Calendar.current
         
         //1）获取一个小的单位在一个大的单位里面的序数
         
-        let count = calendar.ordinalityOfUnit(NSCalendarUnit.Weekday, inUnit: NSCalendarUnit.WeekOfMonth, forDate: NSDate())
+        let count = (calendar as NSCalendar).ordinality(of: NSCalendar.Unit.weekday, in: NSCalendar.Unit.weekOfMonth, for: Date())
         print("calendarInfo:---\(count)")
     }
     
@@ -284,12 +284,12 @@ class ViewController: UIViewController {
     
     func rangeOfUnit() {
         
-        let calendar: NSCalendar = NSCalendar.currentCalendar()
+        let calendar: Foundation.Calendar = Foundation.Calendar.current
         
-        var startDate: NSDate? = nil
-        var intervalCount: NSTimeInterval = 0
+        var startDate: Date? = nil
+        var intervalCount: TimeInterval = 0
         
-        let bl: Bool = calendar.rangeOfUnit(NSCalendarUnit.Month, startDate: &startDate, interval: &intervalCount, forDate: NSDate())
+//        let bl: Bool = (calendar as NSCalendar).range(of: NSCalendar.Unit.month, start: &startDate, interval: &intervalCount, for: Date())
         print("startDate:\(startDate)---------  intervalCount: \(intervalCount)")
     }
     
